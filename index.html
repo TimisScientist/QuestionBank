@@ -1,0 +1,712 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>課堂抽題小遊戲（完整題庫）</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2rem; }
+    .option { display: block; margin: 0.5rem auto; padding: 0.6rem 1rem; font-size: 1rem; width: 80%; max-width: 300px; }
+    .correct { color: green; font-weight: bold; }
+    .wrong { color: red; font-weight: bold; }
+    button { font-size: 1rem; padding: 0.5rem 1rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🎲 課堂抽題小遊戲（完整題庫）</h1>
+  <div id="game">
+    <button onclick="drawQuestion()">抽出一條問題</button>
+  </div>
+
+  <script>
+const questions = [
+  {
+    "question": "這是第 1 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 2 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 3 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 4 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 5 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 6 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 7 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 8 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 9 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 10 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 11 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 12 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 13 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 14 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 15 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 16 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 17 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 18 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 19 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 20 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 21 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 22 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 23 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 24 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 25 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 26 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 27 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 28 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 29 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 30 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 31 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 32 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 33 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 34 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 35 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 36 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 37 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 38 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 39 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 40 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 41 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 42 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 43 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 44 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 45 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 46 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 47 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 48 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  },
+  {
+    "question": "這是第 49 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      0,
+      2
+    ]
+  },
+  {
+    "question": "這是第 50 題的範例問題？",
+    "options": [
+      "選項一",
+      "選項二",
+      "選項三",
+      "選項四"
+    ],
+    "correct": [
+      1
+    ]
+  }
+];
+
+let current = null;
+let selected = [];
+let usedQuestions = new Set();
+
+function drawQuestion() {
+  if (usedQuestions.size === questions.length) {
+    alert('所有題目都已抽完！請重新整理頁面重新開始。');
+    return;
+  }
+
+  let q;
+  do {
+    q = questions[Math.floor(Math.random() * questions.length)];
+  } while (usedQuestions.has(q.question));
+  usedQuestions.add(q.question);
+
+  current = q;
+  selected = [];
+  const container = document.getElementById("game");
+  container.innerHTML = "<h2>" + q.question + "</h2>";
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement("button");
+    btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
+    btn.className = "option";
+    btn.onclick = () => toggleSelect(btn, idx);
+    container.appendChild(btn);
+  });
+  const submit = document.createElement("button");
+  submit.innerText = "✅ 提交答案";
+  submit.onclick = checkAnswer;
+  container.appendChild(submit);
+}
+
+function toggleSelect(btn, index) {
+  if (selected.includes(index)) {
+    selected = selected.filter(i => i !== index);
+    btn.style.backgroundColor = "";
+  } else {
+    selected.push(index);
+    btn.style.backgroundColor = "#d3d3d3";
+  }
+}
+
+function checkAnswer() {
+  const isCorrect = arraysEqual(new Set(current.correct), new Set(selected));
+  const container = document.getElementById("game");
+  container.innerHTML += `<p class="{isCorrect ? 'correct' : 'wrong'}">` +
+    (isCorrect ? "🎉 答對了！好棒！" : "💡 答錯了，不怕錯，下次加油！") + "</p>";
+  const next = document.createElement("button");
+  next.innerText = "🔁 下一位玩家";
+  next.onclick = drawQuestion;
+  container.appendChild(next);
+}
+
+function arraysEqual(a, b) {
+  if (a.size !== b.size) return false;
+  for (const val of a) if (!b.has(val)) return false;
+  return true;
+}
+</script>
+</body>
+</html>
