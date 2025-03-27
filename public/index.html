@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>課堂抽題小遊戲</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2rem; }
+    .option { display: block; margin: 0.5rem auto; padding: 0.6rem 1rem; font-size: 1rem; width: 80%; max-width: 300px; }
+    .correct { color: green; font-weight: bold; }
+    .wrong { color: red; font-weight: bold; }
+    button { font-size: 1rem; padding: 0.5rem 1rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🎲 課堂抽題小遊戲</h1>
+  <div id="game">
+    <button onclick="drawQuestion()">抽出一條問題</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "褐根病是由哪一種真菌引起的？",
+        options: ["白粉病菌", "有害木層孔菌（Phellinus noxius）", "黑腐病菌", "木黴菌"],
+        correct: [1]
+      },
+      {
+        question: "哪一項不是褐根病常見的傳播途徑？",
+        options: ["空氣中孢子", "根部接觸", "樹葉表面的水分", "受污染的土壤與水"],
+        correct: [2]
+      }
+    ];
+
+    let current = null;
+    let selected = [];
+
+    function drawQuestion() {
+      const q = questions[Math.floor(Math.random() * questions.length)];
+      current = q;
+      selected = [];
+      const container = document.getElementById("game");
+      container.innerHTML = "<h2>" + q.question + "</h2>";
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
+        btn.className = "option";
+        btn.onclick = () => toggleSelect(btn, idx);
+        container.appendChild(btn);
+      });
+      const submit = document.createElement("button");
+      submit.innerText = "✅ 提交答案";
+      submit.onclick = checkAnswer;
+      container.appendChild(submit);
+    }
+
+    function toggleSelect(btn, index) {
+      if (selected.includes(index)) {
+        selected = selected.filter(i => i !== index);
+        btn.style.backgroundColor = "";
+      } else {
+        selected.push(index);
+        btn.style.backgroundColor = "#d3d3d3";
+      }
+    }
+
+    function checkAnswer() {
+      const isCorrect = arraysEqual(new Set(current.correct), new Set(selected));
+      const container = document.getElementById("game");
+      container.innerHTML += `<p class="${isCorrect ? 'correct' : 'wrong'}">` +
+        (isCorrect ? "🎉 答對了！好棒！" : "💡 答錯了，不怕錯，下次加油！") + "</p>";
+      const next = document.createElement("button");
+      next.innerText = "🔁 下一位玩家";
+      next.onclick = drawQuestion;
+      container.appendChild(next);
+    }
+
+    function arraysEqual(a, b) {
+      if (a.size !== b.size) return false;
+      for (const val of a) if (!b.has(val)) return false;
+      return true;
+    }
+  </script>
+</body>
+</html>
