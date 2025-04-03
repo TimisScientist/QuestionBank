@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -11,6 +10,12 @@
     .correct { color: green; font-weight: bold; }
     .wrong { color: red; font-weight: bold; }
     button { font-size: 1rem; padding: 0.5rem 1rem; margin-top: 1rem; }
+    #timer { font-weight: bold; color: #333; }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -244,7 +249,7 @@ const questions = [
       "保留主要分枝進行微調"
     ],
     "correct": [
-      2
+      1
     ]
   },
   {
@@ -280,7 +285,7 @@ const questions = [
       "計劃在城市中增加綠色空間"
     ],
     "correct": [
-      1
+      3
     ]
   }
 ];
@@ -288,6 +293,8 @@ const questions = [
 let current = null;
 let selected = [];
 let usedQuestions = new Set();
+let timer;
+let timeLeft = 20; // 預設20秒限時
 
 function drawQuestion() {
   if (usedQuestions.size === questions.length) {
@@ -295,6 +302,9 @@ function drawQuestion() {
     return;
   }
 
+  clearInterval(timer);
+  timeLeft = 20;
+  
   let q;
   do {
     q = questions[Math.floor(Math.random() * questions.length)];
@@ -305,6 +315,29 @@ function drawQuestion() {
   selected = [];
   const container = document.getElementById("game");
   container.innerHTML = "<h2>" + q.question + "</h2>";
+  
+  const timerDisplay = document.createElement("div");
+  timerDisplay.id = "timer";
+  timerDisplay.style.fontSize = "1.5rem";
+  timerDisplay.style.margin = "1rem";
+  timerDisplay.textContent = `剩餘時間: ${timeLeft}秒`;
+  container.appendChild(timerDisplay);
+  
+  timer = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = `剩餘時間: ${timeLeft}秒`;
+    
+    if (timeLeft <= 5) {
+      timerDisplay.style.color = "red";
+      timerDisplay.style.animation = "blink 0.5s infinite";
+    }
+    
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      timeUp();
+    }
+  }, 1000);
+  
   q.options.forEach((opt, idx) => {
     const btn = document.createElement("button");
     btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
@@ -312,10 +345,29 @@ function drawQuestion() {
     btn.onclick = () => toggleSelect(btn, idx);
     container.appendChild(btn);
   });
+  
   const submit = document.createElement("button");
   submit.innerText = "✅ 提交答案";
   submit.onclick = checkAnswer;
   container.appendChild(submit);
+}
+
+function timeUp() {
+  const container = document.getElementById("game");
+  container.innerHTML += `<p class="wrong">⏰ 時間到！正確答案是: ${getCorrectAnswerText()}</p>`;
+  
+  const next = document.createElement("button");
+  next.innerText = "🔁 下一位玩家";
+  next.onclick = drawQuestion;
+  container.appendChild(next);
+  
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.disabled = true;
+  });
+}
+
+function getCorrectAnswerText() {
+  return current.correct.map(idx => String.fromCharCode(65 + idx)).join('、');
 }
 
 function toggleSelect(btn, index) {
@@ -329,9 +381,10 @@ function toggleSelect(btn, index) {
 }
 
 function checkAnswer() {
+  clearInterval(timer);
   const isCorrect = arraysEqual(new Set(current.correct), new Set(selected));
   const container = document.getElementById("game");
-  container.innerHTML += `<p class="{isCorrect ? 'correct' : 'wrong'}">` +
+  container.innerHTML += `<p class="${isCorrect ? 'correct' : 'wrong'}">` +
     (isCorrect ? "🎉 答對了！好棒！獲得一張法寶牌！" : "💡 答錯了，不怕錯，下次加油！") + "</p>";
   const next = document.createElement("button");
   next.innerText = "🔁 下一位玩家";
