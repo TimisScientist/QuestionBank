@@ -9,6 +9,7 @@
     .option { display: block; margin: 0.5rem auto; padding: 0.6rem 1rem; font-size: 1rem; width: 80%; max-width: 300px; }
     .correct { color: green; font-weight: bold; }
     .wrong { color: red; font-weight: bold; }
+    .answer-info { color: #333; margin-top: 0.5rem; }
     button { font-size: 1rem; padding: 0.5rem 1rem; margin-top: 1rem; }
     #timer { font-weight: bold; color: #333; }
     @keyframes blink {
@@ -25,8 +26,9 @@
   </div>
 
   <script>
+// 題庫保持不變（與原始程式碼相同）
 const questions = [
-  {
+{
     "question": "關於都市樹木的生態與環境效益，下列哪些說法正確？（可多選）",
     "options": [
       "都市樹木可有效吸收二氧化碳並儲存碳，有助應對氣候變化",
@@ -294,7 +296,7 @@ let current = null;
 let selected = [];
 let usedQuestions = new Set();
 let timer;
-let timeLeft = 20; // 預設20秒限時
+let timeLeft = 20;
 
 function drawQuestion() {
   if (usedQuestions.size === questions.length) {
@@ -354,7 +356,10 @@ function drawQuestion() {
 
 function timeUp() {
   const container = document.getElementById("game");
-  container.innerHTML += `<p class="wrong">⏰ 時間到！正確答案是: ${getCorrectAnswerText()}</p>`;
+  container.innerHTML += `
+    <p class="wrong">⏰ 時間到！</p>
+    <p class="answer-info">正確答案: ${getCorrectAnswerText()}</p>
+  `;
   
   const next = document.createElement("button");
   next.innerText = "🔁 下一位玩家";
@@ -367,7 +372,7 @@ function timeUp() {
 }
 
 function getCorrectAnswerText() {
-  return current.correct.map(idx => String.fromCharCode(65 + idx)).join('、');
+  return current.correct.map(idx => String.fromCharCode(65 + idx) + ". " + current.options[idx]).join('、');
 }
 
 function toggleSelect(btn, index) {
@@ -382,20 +387,29 @@ function toggleSelect(btn, index) {
 
 function checkAnswer() {
   clearInterval(timer);
-  const isCorrect = arraysEqual(new Set(current.correct), new Set(selected));
+  
+  const isCorrect = selected.some(answer => current.correct.includes(answer));
   const container = document.getElementById("game");
-  container.innerHTML += `<p class="${isCorrect ? 'correct' : 'wrong'}">` +
-    (isCorrect ? "🎉 答對了！好棒！獲得一張法寶牌！" : "💡 答錯了，不怕錯，下次加油！") + "</p>";
+  
+  // 顯示答題結果
+  container.innerHTML += `
+    <p class="${isCorrect ? 'correct' : 'wrong'}">
+      ${isCorrect ? "🎉 答對了！好棒！獲得一張法寶牌！" : "💡 答錯了，不怕錯，下次加油！"}
+    </p>
+    <p class="answer-info">
+      正確答案: ${getCorrectAnswerText()}
+    </p>
+  `;
+  
+  // 如果學生只答對部分答案，額外提示
+  if (isCorrect && selected.some(answer => !current.correct.includes(answer))) {
+    container.innerHTML += `<p class="answer-info">（你選了部分正確答案）</p>`;
+  }
+  
   const next = document.createElement("button");
   next.innerText = "🔁 下一位玩家";
   next.onclick = drawQuestion;
   container.appendChild(next);
-}
-
-function arraysEqual(a, b) {
-  if (a.size !== b.size) return false;
-  for (const val of a) if (!b.has(val)) return false;
-  return true;
 }
 </script>
 </body>
